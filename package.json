@@ -1,0 +1,18 @@
+{
+  "name": "skybee-payment-api",
+  "version": "1.0.0",
+  "description": "SkyBee Payment API - Serverless",
+  "main": "api/payment/health.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "firebase-admin": "^11.11.0",
+    "razorpay": "^2.9.2",
+    "vercel": "^43.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
