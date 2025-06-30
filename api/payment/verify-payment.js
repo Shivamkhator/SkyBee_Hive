@@ -1,3 +1,4 @@
+// api/payment/verify-payment.js - Updated for bees
 const crypto = require('crypto');
 const razorpay = require('../../lib/razorpay');
 const { verifyToken } = require('../../lib/auth');
@@ -64,13 +65,13 @@ const handler = async (req, res) => {
 
     if (orderData.status === 'completed') {
       const userDoc = await db.collection('users').doc(user.uid).get();
-      const currentLeafs = userDoc.exists ? (userDoc.data().leafs || 0) : 0;
+      const currentBees = userDoc.exists ? (userDoc.data().bees || 0) : 0;
       
       return res.json({
         success: true,
         message: 'Payment already processed',
-        leafsAdded: orderData.leafQuantity,
-        newLeafCount: currentLeafs,
+        beesAdded: orderData.beeQuantity,
+        newBeeCount: currentBees,
         transactionId: razorpay_payment_id
       });
     }
@@ -96,12 +97,12 @@ const handler = async (req, res) => {
       }
 
       const userData = userDoc.data();
-      const currentLeafs = userData.leafs || 0;
-      const newLeafCount = currentLeafs + orderData.leafQuantity;
+      const currentBees = userData.bees || 0;
+      const newBeeCount = currentBees + orderData.beeQuantity;
 
       // Update user profile
       transaction.update(userRef, {
-        leafs: newLeafCount,
+        bees: newBeeCount,
         lastPurchase: new Date(),
         totalPurchases: (userData.totalPurchases || 0) + 1,
         totalSpent: (userData.totalSpent || 0) + (orderData.amount / 100)
@@ -115,7 +116,7 @@ const handler = async (req, res) => {
         orderId: razorpay_order_id,
         signature: razorpay_signature,
         amount: orderData.amount / 100,
-        leafsPurchased: orderData.leafQuantity,
+        beesPurchased: orderData.beeQuantity,
         timestamp: new Date(),
         status: 'completed',
         verified: true,
@@ -138,9 +139,9 @@ const handler = async (req, res) => {
       });
 
       return {
-        newLeafCount: newLeafCount,
-        leafsAdded: orderData.leafQuantity,
-        previousLeafCount: currentLeafs
+        newBeeCount: newBeeCount,
+        beesAdded: orderData.beeQuantity,
+        previousBeeCount: currentBees
       };
     });
 
@@ -149,8 +150,8 @@ const handler = async (req, res) => {
     res.json({
       success: true,
       message: 'Payment verified successfully',
-      leafsAdded: result.leafsAdded,
-      newLeafCount: result.newLeafCount,
+      beesAdded: result.beesAdded,
+      newBeeCount: result.newBeeCount,
       transactionId: razorpay_payment_id
     });
 

@@ -1,12 +1,14 @@
 // api/subscription/create.js
-import Razorpay from 'razorpay';
-import { verifyToken } from '../../lib/auth.js';
-import { corsMiddleware } from '../../lib/cors.js';
+const razorpay = require('../../lib/razorpay');
+const { verifyToken } = require('../../lib/auth');
+const { db } = require('../../lib/firebase');
+const allowCors = require('../../lib/cors');
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
+const generateShortReceipt = (userId) => {
+  const shortUserId = userId.substring(0, 15);
+  const timestamp = Date.now().toString().slice(-10);
+  return `sub_${shortUserId}_${timestamp}`;
+};
 
 const handler = async (req, res) => {
   if (req.method !== 'POST') {
@@ -14,14 +16,15 @@ const handler = async (req, res) => {
   }
 
   try {
+    // Verify authentication
     const user = await verifyToken(req);
-    const { amount, currency, subscriptionType } = req.body;
+    const { amount, currency = 'INR', subscriptionType } = req.body;
 
     // Validate required fields
-    if (!amount || !currency || !subscriptionType) {
+    if (!amount || !subscriptionType) {
       return res.status(400).json({ 
         error: 'Missing required fields',
-        required: ['amount', 'currency', 'subscriptionType']
+        required: ['amount', 'subscriptionType']
       });
     }
 
@@ -31,36 +34,52 @@ const handler = async (req, res) => {
     }
 
     // Validate amount (49900 paise = ₹499)
-    const expectedAmount = 49900; // ₹499 in paise
-    if (amount !== expectedAmount) {
+    if (amount !== 49900) {
       return res.status(400).json({ 
-        error: 'Invalid amount',
-        expected: expectedAmount,
+        error: 'Invalid amount. Expected ₹499',
+        expected: 49900,
         received: amount 
       });
     }
 
+    console.log(`👑 Creating subscription order for user ${user.uid}, amount: ₹${amount/100}`);
+
+    // Generate short receipt
+    const receipt = generateShortReceipt(user.uid);
+    console.log(`🧾 Generated subscription receipt: "${receipt}" (Length: ${receipt.length})`);
+
     // Create Razorpay order
-    const order = await razorpay.orders.create({
+    const options = {
       amount: amount,
       currency: currency,
-      receipt: `sub_${user.uid}_${Date.now()}`,
+      receipt: receipt,
       notes: {
         userId: user.uid,
-        subscriptionType: subscriptionType,
-        userEmail: user.email || 'unknown',
-        createdAt: new Date().toISOString()
+        productType: 'subscription',
+        subscriptionType: 'queen_bee',
+        duration: '1_month',
+        appName: 'SkyBee'
       }
-    });
+    };
 
-    console.log('✅ Subscription order created:', {
+    const order = await razorpay.orders.create(options);
+
+    // Store subscription order in Firestore (IMPORTANT - was missing!)
+    await db.collection('subscription_orders').doc(order.id).set({
       orderId: order.id,
-      amount: order.amount,
       userId: user.uid,
-      subscriptionType
+      amount: amount,
+      currency: currency,
+      subscriptionType: 'queen_bee',
+      duration: '1_month',
+      status: 'created',
+      createdAt: new Date(),
+      receipt: receipt
     });
 
-    res.status(200).json({
+    console.log(`✅ Subscription order created successfully: ${order.id}`);
+
+    res.json({
       success: true,
       orderId: order.id,
       amount: order.amount,
@@ -79,11 +98,11 @@ const handler = async (req, res) => {
       return res.status(401).json({ error: 'Invalid authentication token' });
     }
 
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to create subscription order',
-      details: error.message 
+      message: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
     });
   }
 };
 
-export default corsMiddleware(handler);
+module.exports = allowCors(handler);

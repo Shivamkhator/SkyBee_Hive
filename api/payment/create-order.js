@@ -1,3 +1,4 @@
+// api/payment/create-order.js - Updated for bees
 const razorpay = require('../../lib/razorpay');
 const { verifyToken } = require('../../lib/auth');
 const { db } = require('../../lib/firebase');
@@ -37,7 +38,7 @@ const handler = async (req, res) => {
       receipt: receipt,
       notes: {
         userId: user.uid,
-        productType: 'leafs',
+        productType: 'bees',
         quantity: 7,
         appName: 'SkyBee'
       }
@@ -53,7 +54,7 @@ const handler = async (req, res) => {
       currency: currency,
       status: 'created',
       createdAt: new Date(),
-      leafQuantity: 7,
+      beeQuantity: 7,
       receipt: receipt
     });
 
