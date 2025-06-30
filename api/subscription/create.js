@@ -33,11 +33,11 @@ const handler = async (req, res) => {
       return res.status(400).json({ error: 'Invalid subscription type' });
     }
 
-    // Validate amount (49900 paise = ₹499)
-    if (amount !== 49900) {
+    // Validate amount (9900 paise = ₹99)
+    if (amount !== 9900) {
       return res.status(400).json({ 
-        error: 'Invalid amount. Expected ₹499',
-        expected: 49900,
+        error: 'Invalid amount. Expected ₹99',
+        expected: 9900,
         received: amount 
       });
     }
@@ -57,7 +57,7 @@ const handler = async (req, res) => {
         userId: user.uid,
         productType: 'subscription',
         subscriptionType: 'queen_bee',
-        duration: '1_month',
+        duration: '1_week',
         appName: 'SkyBee'
       }
     };
@@ -71,7 +71,7 @@ const handler = async (req, res) => {
       amount: amount,
       currency: currency,
       subscriptionType: 'queen_bee',
-      duration: '1_month',
+      duration: '1_week',
       status: 'created',
       createdAt: new Date(),
       receipt: receipt

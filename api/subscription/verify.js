@@ -89,7 +89,7 @@ const handler = async (req, res) => {
     // Calculate subscription dates
     const subscriptionStart = new Date();
     const subscriptionExpiry = new Date();
-    subscriptionExpiry.setMonth(subscriptionExpiry.getMonth() + 1);
+    subscriptionExpiry.setDate(subscriptionExpiry.getDate() + 7); // Add 7 days instead of 1 month
 
     // Process subscription in transaction
     const result = await db.runTransaction(async (transaction) => {
@@ -101,13 +101,17 @@ const handler = async (req, res) => {
       }
 
       const userData = userDoc.data();
+      const currentBees = userData.bees || 0;
+      const welcomeBees = 7; // Immediate welcome bonus
+      const newBeeCount = currentBees + welcomeBees;
 
       // Update user profile with subscription
       transaction.update(userRef, {
+        bees: newBeeCount, // Add 7 bees immediately
         isQueenSubscriber: true,
         queenSubscriptionExpiry: subscriptionExpiry,
         queenSubscriptionStart: subscriptionStart,
-        lastWeeklyBeesGiven: null, // Reset weekly bees
+        lastWeeklyBeesGiven: subscriptionStart, // Track when bees were given
         totalSubscriptions: (userData.totalSubscriptions || 0) + 1,
         totalSpent: (userData.totalSpent || 0) + (orderData.amount / 100),
         lastPurchase: new Date() // Same as your payment verification
@@ -149,7 +153,9 @@ const handler = async (req, res) => {
 
       return {
         subscriptionType: orderData.subscriptionType,
-        subscriptionExpiry: subscriptionExpiry.toISOString()
+        subscriptionExpiry: subscriptionExpiry.toISOString(),
+        beesAdded: welcomeBees,
+        newBeeCount: newBeeCount
       };
     });
 
@@ -160,6 +166,8 @@ const handler = async (req, res) => {
       message: 'Subscription activated successfully',
       subscriptionType: result.subscriptionType,
       subscriptionExpiry: result.subscriptionExpiry,
+      beesAdded: result.beesAdded,
+      newBeeCount: result.newBeeCount,
       transactionId: razorpay_payment_id
     });
 
