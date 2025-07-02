@@ -3,6 +3,16 @@ const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 const handler = async (req, res) => {
+  // Add CORS headers for web requests
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ 
@@ -14,7 +24,30 @@ const handler = async (req, res) => {
   try {
     const { email, otp, type = 'signin' } = req.body;
 
-    // Validate required fields
+    // Debug: Check ALL environment variables
+    console.log('🔍 Environment Debug:', {
+      nodeEnv: process.env.NODE_ENV,
+      hasGmailUser: !!process.env.GMAIL_USER,
+      hasGmailPassword: !!process.env.GMAIL_APP_PASSWORD,
+      gmailUserLength: process.env.GMAIL_USER ? process.env.GMAIL_USER.length : 0,
+      gmailPasswordLength: process.env.GMAIL_APP_PASSWORD ? process.env.GMAIL_APP_PASSWORD.length : 0,
+      gmailUserPreview: process.env.GMAIL_USER ? process.env.GMAIL_USER.substring(0, 3) + '***' : 'MISSING',
+      allEnvKeys: Object.keys(process.env).filter(key => key.includes('GMAIL'))
+    });
+
+    // Validate environment variables first
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+      console.error('❌ Missing environment variables');
+      return res.status(500).json({
+        success: false,
+        message: 'Email service not configured properly',
+        debug: {
+          hasGmailUser: !!process.env.GMAIL_USER,
+          hasGmailPassword: !!process.env.GMAIL_APP_PASSWORD,
+          availableEnvVars: Object.keys(process.env).filter(key => key.includes('GMAIL'))
+        }
+      });
+    }
     if (!email || !otp) {
       return res.status(400).json({
         success: false,
@@ -22,7 +55,7 @@ const handler = async (req, res) => {
       });
     }
 
-    // Validate email format
+    // Validate required fields
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({
@@ -31,12 +64,19 @@ const handler = async (req, res) => {
       });
     }
 
-    // Create Gmail SMTP transporter
+    // Create Gmail SMTP transporter with explicit configuration
+    console.log('📧 Creating SMTP transporter...');
     const transporter = nodemailer.createTransport({
       service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false, // Use TLS
       auth: {
-        user: process.env.GMAIL_USER, // Your Gmail address
-        pass: process.env.GMAIL_APP_PASSWORD // Gmail App Password (not regular password)
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD
+      },
+      tls: {
+        rejectUnauthorized: false
       }
     });
 
@@ -103,6 +143,11 @@ const handler = async (req, res) => {
         - SkyBee Team
       `
     };
+
+    // Test connection before sending
+    console.log('🔗 Testing SMTP connection...');
+    await transporter.verify();
+    console.log('✅ SMTP connection verified');
 
     // Send email
     await transporter.sendMail(mailOptions);
