@@ -82,7 +82,6 @@ const handler = async (req, res) => {
       }
     });
 
-    // Email content with professional styling similar to Gameloft Club
     const logoUrl = 'https://skybee.vercel.app/SkyBee.png';
     
     const mailOptions = {
@@ -105,14 +104,21 @@ const handler = async (req, res) => {
             .header { background-color: #1a1a1a; padding: 32px 0; text-align: center; }
             .brand-container { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 16px; }
             .brand-name { color: #ffffff; font-size: 28px; font-weight: 600; letter-spacing: -0.5px; margin: 0; }
-            .logo { max-width: 40px; height: 40px; }
+            .logo { max-width: 40px; height: 40px; filter: brightness(0) invert(1); }
             .tagline { color: #FFD700; font-size: 14px; margin: 0; font-style: italic; font-weight: 400; }
             .content { background-color: #f8f9fa; padding: 32px 24px; }
             .main-content { background-color: #ffffff; border-radius: 12px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
             .greeting { font-size: 18px; font-weight: 500; color: #2d3748; margin: 0 0 24px 0; }
             .message { font-size: 16px; color: #4a5568; line-height: 1.6; margin: 0 0 24px 0; font-weight: 400; }
             .instruction { font-size: 16px; color: #2d3748; margin: 0 0 32px 0; font-weight: 500; }
-            .otp-container { text-align: center; margin: 32px 0; display: flex; justify-content: center; }
+            .otp-container { 
+              text-align: center; 
+              margin: 32px 0; 
+              display: flex; 
+              justify-content: center; 
+              align-items: center;
+              width: 100%;
+            }
             .otp-code { 
               font-size: 36px; 
               font-weight: 700; 
@@ -122,26 +128,29 @@ const handler = async (req, res) => {
               background-color: #2d3748;
               padding: 20px 32px;
               border-radius: 8px;
-              display: inline-block;
               border: 1px solid #4a5568;
               box-shadow: 0 2px 8px rgba(0,0,0,0.15);
               min-width: 240px;
               text-align: center;
               white-space: nowrap;
               box-sizing: border-box;
+              margin: 0 auto;
             }
             .security-notice { 
-              background-color: #fffbf0; 
-              border-left: 4px solid #f6ad55; 
+              background-color: #fef2f2; 
+              border-left: 4px solid #ef4444; 
               padding: 16px 20px; 
               margin: 32px 0 0 0; 
               border-radius: 6px;
             }
-            .security-notice p { margin: 0; color: #744210; font-size: 14px; line-height: 1.5; font-weight: 400; }
+            .security-notice p { margin: 0; color: #991b1b; font-size: 14px; line-height: 1.5; font-weight: 400; }
             .footer { background-color: #1a1a1a; padding: 24px; text-align: center; }
             .footer-text { color: #a0aec0; font-size: 12px; line-height: 1.6; margin: 8px 0; }
             .footer-auto { color: #a0aec0; font-size: 12px; margin: 4px 0; }
             .footer-replies { color: #a0aec0; font-size: 12px; margin: 4px 0; }
+            .footer-social { margin: 12px 0; }
+            .footer-social a { color: #E1306C; text-decoration: none; font-size: 12px; font-weight: 500; }
+            .footer-social a:hover { color: #C13584; }
             .footer-copyright { color: #718096; font-size: 11px; margin: 16px 0 0 0; }
           </style>
         </head>
@@ -161,7 +170,7 @@ const handler = async (req, res) => {
             <div class="content">
               <div class="main-content">
                 
-                <div class="greeting">Hi${name ? ` ${name}` : ''},</div>
+                <div class="greeting">Hi,</div>
                 
                 <div class="message">
                   You recently tried to ${type === 'signup' ? 'sign up for' : 'log in to'} SkyBee using your email address.
@@ -178,7 +187,7 @@ const handler = async (req, res) => {
 
                 <!-- Security Notice -->
                 <div class="security-notice">
-                  <p><strong>Security Notice:</strong> This code expires in 10 minutes. If you didn't make this request, please ignore this email.</p>
+                  <p><strong>Security Notice:</strong> This code expires in 10 minutes. If you did not make this request, please ignore this email or contact our support team.</p>
                 </div>
 
               </div>
@@ -188,6 +197,9 @@ const handler = async (req, res) => {
             <div class="footer">
               <div class="footer-auto">This is an automatically generated message.</div>
               <div class="footer-replies">Replies are not monitored or answered.</div>
+              <div class="footer-social">
+                <a href="https://instagram.com/weareskybee" target="_blank">Follow us @weareskybee</a>
+              </div>
               <div class="footer-copyright">© ${new Date().getFullYear()} SkyBee. All rights reserved.</div>
             </div>
 
@@ -199,7 +211,7 @@ const handler = async (req, res) => {
       text: `
         SkyBee ${type === 'signup' ? 'Sign Up' : 'Sign In'} Verification
         
-        Hi,
+        Hi${name ? ` ${name}` : ''},
         
         You recently tried to ${type === 'signup' ? 'sign up for' : 'log in to'} SkyBee using your email address.
         
