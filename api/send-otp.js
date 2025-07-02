@@ -83,7 +83,7 @@ const handler = async (req, res) => {
     });
 
     // Email content with professional styling similar to Gameloft Club
-    const logoUrl = 'https://skybee.vercel.app/SkyBee.svg';
+    const logoUrl = 'https://skybee.vercel.app/SkyBee.png';
     
     const mailOptions = {
       from: {
@@ -113,16 +113,23 @@ const handler = async (req, res) => {
             .instruction { font-size: 16px; color: #333333; margin-bottom: 30px; }
             .otp-container { text-align: center; margin: 40px 0; }
             .otp-code { 
-              font-size: 48px; 
+              font-size: 42px; 
               font-weight: bold; 
-              color: #1a1a1a; 
-              letter-spacing: 8px; 
-              font-family: 'Courier New', monospace;
-              background-color: #f0f0f0;
-              padding: 20px 30px;
-              border-radius: 8px;
+              color: #ffffff; 
+              letter-spacing: 6px; 
+              font-family: 'Courier New', Courier, monospace;
+              background-color: #2a2a2a;
+              padding: 25px 35px;
+              border-radius: 12px;
               display: inline-block;
-              border: 2px solid #e0e0e0;
+              border: 2px solid #404040;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+              min-width: 280px;
+              text-align: center;
+              word-spacing: normal;
+              white-space: nowrap;
+              overflow: hidden;
+              box-sizing: border-box;
             }
             .security-notice { 
               background-color: #f8f9fa; 
