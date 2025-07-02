@@ -82,6 +82,7 @@ const handler = async (req, res) => {
       }
     });
 
+    // Email content with professional styling similar to Gameloft Club
     const logoUrl = 'https://skybee.vercel.app/SkyBee.png';
     
     const mailOptions = {
@@ -102,9 +103,9 @@ const handler = async (req, res) => {
             body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; line-height: 1.6; }
             .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
             .header { background-color: #1a1a1a; padding: 32px 0; text-align: center; }
-            .brand-container { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 16px; }
-            .brand-name { color: #ffffff; font-size: 28px; font-weight: 600; letter-spacing: -0.5px; margin: 0; }
-            .logo { max-width: 40px; height: 40px; filter: brightness(0) invert(1); }
+            .brand-container { text-align: center; margin-bottom: 16px; white-space: nowrap; }
+            .brand-name { color: #ffffff; font-size: 28px; font-weight: 600; letter-spacing: -0.5px; margin: 0; display: inline; vertical-align: middle; }
+            .logo { max-width: 40px; height: 40px; filter: brightness(0) invert(1); display: inline; vertical-align: middle; margin-left: 12px; }
             .tagline { color: #FFD700; font-size: 14px; margin: 0; font-style: italic; font-weight: 400; }
             .content { background-color: #f8f9fa; padding: 32px 24px; }
             .main-content { background-color: #ffffff; border-radius: 12px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
@@ -149,8 +150,8 @@ const handler = async (req, res) => {
             .footer-auto { color: #a0aec0; font-size: 12px; margin: 4px 0; }
             .footer-replies { color: #a0aec0; font-size: 12px; margin: 4px 0; }
             .footer-social { margin: 12px 0; }
-            .footer-social a { color: #E1306C; text-decoration: none; font-size: 12px; font-weight: 500; }
-            .footer-social a:hover { color: #C13584; }
+            .footer-social a { color: #FFD700; text-decoration: none; font-size: 12px; font-weight: 500; }
+            .footer-social a:hover { color: #F5C842; }
             .footer-copyright { color: #718096; font-size: 11px; margin: 16px 0 0 0; }
           </style>
         </head>
@@ -159,11 +160,17 @@ const handler = async (req, res) => {
             
             <!-- Header -->
             <div class="header">
-              <div class="brand-container">
-                <h1 class="brand-name">SkyBee</h1>
-                <img src="${logoUrl}" alt="SkyBee" class="logo" />
-              </div>
-              <div class="tagline">Small habits, Big changes.</div>
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                <tr>
+                  <td align="center">
+                    <div class="brand-container">
+                      <span class="brand-name">SkyBee</span>
+                      <img src="${logoUrl}" alt="SkyBee" class="logo" />
+                    </div>
+                    <div class="tagline">Small habits, Big changes.</div>
+                  </td>
+                </tr>
+              </table>
             </div>
 
             <!-- Content -->
@@ -211,7 +218,7 @@ const handler = async (req, res) => {
       text: `
         SkyBee ${type === 'signup' ? 'Sign Up' : 'Sign In'} Verification
         
-        Hi${name ? ` ${name}` : ''},
+        Hi,
         
         You recently tried to ${type === 'signup' ? 'sign up for' : 'log in to'} SkyBee using your email address.
         
