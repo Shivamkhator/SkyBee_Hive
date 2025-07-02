@@ -8,6 +8,7 @@
     "deploy": "vercel --prod"
   },
   "dependencies": {
+    "dotenv": "^17.0.1",
     "firebase-admin": "^11.11.0",
     "nodemailer": "^7.0.4",
     "razorpay": "^2.9.2",
