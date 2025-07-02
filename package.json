@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "firebase-admin": "^11.11.0",
+    "nodemailer": "^7.0.4",
     "razorpay": "^2.9.2",
     "vercel": "^43.3.0"
   },
