@@ -68,7 +68,7 @@ const handler = async (req, res) => {
 
     // Create Gmail SMTP transporter with explicit configuration
     console.log('📧 Creating SMTP transporter...');
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       service: 'gmail',
       host: 'smtp.gmail.com',
       port: 587,
