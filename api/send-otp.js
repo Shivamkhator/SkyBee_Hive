@@ -83,8 +83,8 @@ const handler = async (req, res) => {
     });
 
     // Email content with professional styling similar to Gameloft Club
-    const logoUrl = 'https://skybee.vercel.app/SkyBee.png';
-    
+    const logoUrl = `https://skybee.vercel.app/SkyBee.png?v=${Date.now()}`;
+
     const mailOptions = {
       from: {
         name: 'SkyBee',
