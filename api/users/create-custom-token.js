@@ -3,13 +3,18 @@ const admin = require('firebase-admin');
 
 // Initialize Firebase Admin SDK (do this once)
 if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    }),
-  });
+  try {
+    admin.initializeApp({
+      credential: admin.credential.cert({
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      }),
+    });
+    console.log('✅ Firebase Admin initialized successfully');
+  } catch (error) {
+    console.error('❌ Firebase Admin initialization failed:', error);
+  }
 }
 
 const handler = async (req, res) => {
@@ -34,10 +39,33 @@ const handler = async (req, res) => {
   try {
     const { email } = req.body;
 
+    // Debug logging
+    console.log('🔍 Create custom token request:', { email });
+    console.log('🔍 Environment check:', {
+      hasProjectId: !!process.env.FIREBASE_PROJECT_ID,
+      hasClientEmail: !!process.env.FIREBASE_CLIENT_EMAIL,
+      hasPrivateKey: !!process.env.FIREBASE_PRIVATE_KEY,
+      projectId: process.env.FIREBASE_PROJECT_ID
+    });
+
     if (!email) {
       return res.status(400).json({
         success: false,
         message: 'Email is required'
+      });
+    }
+
+    // Validate environment variables
+    if (!process.env.FIREBASE_PROJECT_ID || !process.env.FIREBASE_CLIENT_EMAIL || !process.env.FIREBASE_PRIVATE_KEY) {
+      console.error('❌ Missing Firebase Admin environment variables');
+      return res.status(500).json({
+        success: false,
+        message: 'Firebase Admin not configured properly',
+        debug: {
+          hasProjectId: !!process.env.FIREBASE_PROJECT_ID,
+          hasClientEmail: !!process.env.FIREBASE_CLIENT_EMAIL,
+          hasPrivateKey: !!process.env.FIREBASE_PRIVATE_KEY,
+        }
       });
     }
 
