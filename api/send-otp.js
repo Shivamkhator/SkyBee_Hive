@@ -105,7 +105,7 @@ const handler = async (req, res) => {
             .header { background-color: #1a1a1a; padding: 32px 0; text-align: center; }
             .brand-container { text-align: center; margin-bottom: 16px; white-space: nowrap; }
             .brand-name { color: #ffffff; font-size: 28px; font-weight: 600; letter-spacing: -0.5px; margin: 0; display: inline; vertical-align: middle; }
-            .logo { max-width: 40px; height: 40px; filter: brightness(0) invert(1); display: inline; vertical-align: middle; margin-left: 12px; }
+            .logo { max-width: 40px; height: 40px; display: inline; vertical-align: middle; margin-left: 12px; }
             .tagline { color: #FFD700; font-size: 14px; margin: 0; font-style: italic; font-weight: 400; }
             .content { background-color: #f8f9fa; padding: 32px 24px; }
             .main-content { background-color: #ffffff; border-radius: 12px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
