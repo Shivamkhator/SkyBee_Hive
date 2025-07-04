@@ -4,6 +4,12 @@
       "maxDuration": 30
     }
   },
+  "rewrites": [
+    {
+      "source": "/user/:username",
+      "destination": "/user/index.html"
+    }
+  ],
   "env": {
     "NODE_ENV": "production"
   }
