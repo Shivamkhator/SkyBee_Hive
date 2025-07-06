@@ -1,8 +1,7 @@
 {
-  "name": "skybee-payment-api",
+  "name": "skybee-hive",
   "version": "1.0.0",
-  "description": "SkyBee Payment API - Serverless",
-  "main": "api/payment/health.js",
+  "description": "SkyBee",
   "scripts": {
     "dev": "vercel dev",
     "deploy": "vercel --prod"
