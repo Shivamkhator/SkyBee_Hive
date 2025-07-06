@@ -538,6 +538,8 @@
             border-radius: 8px;
             padding: 4px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            pointer-events: none;
         }
 
         .contact-section {
@@ -836,7 +838,7 @@
                 <div class="qr-container">
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://play.google.com/store/apps/details?id=com.SkyBee.Skybee&bgcolor=FFFFFF&color=000000&margin=1"
                         alt="Download SkyBee from Google Play Store" class="qr-code" />
-                    <img src="https://skybee.vercel.app/SkyBee.png" alt="SkyBee Logo" class="qr-logo">
+                    <img src="https://skybee.vercel.app/SkyBee.png" alt="SkyBee Logo" class="qr-logo" onload="console.log('Logo loaded')" onerror="console.log('Logo failed to load')">
                 </div>
 
                 <p class="download-text" style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
