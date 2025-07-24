@@ -35,12 +35,11 @@ module.exports = async (req, res) => {
   // ✅ Valid signature
   const event = JSON.parse(rawBody);
 
-  console.log(📩 Event received: ${event.event});
+  console.log("📩 Event received: ${event.event}");
 
   if (event.event === 'payment.captured') {
     const payment = event.payload.payment.entity;
     console.log('💰 Payment Captured:', payment);
-    // TODO: Save to DB, mark order as paid, etc.
   }
 
   return res.status(200).json({ status: 'Webhook received' });
