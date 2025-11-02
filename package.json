@@ -7,6 +7,7 @@
     "deploy": "vercel --prod"
   },
   "dependencies": {
+    "@clerk/clerk-sdk-node": "^4.13.23",
     "dotenv": "^17.0.1",
     "firebase-admin": "^11.11.0",
     "nodemailer": "^7.0.4",
