@@ -4,6 +4,7 @@ const razorpay = require('../../lib/razorpay');
 const { verifyToken } = require('../../lib/auth');
 const { db } = require('../../lib/firebase');
 const allowCors = require('../../lib/cors');
+const admin = require('firebase-admin');
 
 const verifyRazorpaySignature = (orderId, paymentId, signature) => {
   try {
@@ -93,12 +94,24 @@ const handler = async (req, res) => {
       const userDoc = await transaction.get(userRef);
       
       if (!userDoc.exists) {
-        throw new Error('User profile not found');
+        userData = { // Create a base profile
+            bees: 0,
+            pollen: 0,
+            totalPurchases: 0,
+            totalSpent: 0,
+            isQueenSubscriber: false,
+            createdAt: new Date(),
+        };
+        // Use set() to create the document with initial data
+        transaction.set(userRef, userData);
+        console.log(`User profile initialized for new Clerk user: ${user.uid}`);
       }
 
       const userData = userDoc.data();
       const currentBees = userData.bees || 0;
       const newBeeCount = currentBees + orderData.beeQuantity;
+
+      
 
       // Update user profile
       transaction.update(userRef, {

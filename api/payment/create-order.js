@@ -21,7 +21,7 @@ const handler = async (req, res) => {
     const { amount, currency = 'INR' } = req.body;
 
     // Validate input
-    if (!amount || amount !== 6900) {
+    if (!amount) {
       return res.status(400).json({ error: 'Invalid amount. Expected ₹69' });
     }
 
